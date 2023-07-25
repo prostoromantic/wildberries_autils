@@ -1,0 +1,63 @@
+{% load static %}
+
+<!doctype html>
+<html lang="ru">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>WBTools</title>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-9ndCyUaIbzAi2FUVXJi0CjmCapSmO7SnpJef0486qhLnuZ2cdeRhO02iuK6FUUVM" crossorigin="anonymous">
+  </head>
+  <body>
+    <div class="container marketing">
+      <header class="d-flex justify-content-center py-3">
+        <ul class="nav nav-pills">
+          <li class="nav-item"><a href="/register-accounts" class="nav-link" aria-current="page">Зарегистрировать аккаунт</a></li>
+          <li class="nav-item"><a href="/" class="nav-link" aria-current="page">Список аккаунтов</a></li>
+          <li class="nav-item"><a href="/get-money" class="nav-link active" aria-current="page">Вывод денег</a></li>
+          <li class="nav-item"><a href="/send-review" class="nav-link" aria-current="page">Оставить отзыв</a></li>
+          <li class="nav-item"><a href="/ransoms" class="nav-link" aria-current="page">Выкупы</a></li>
+          <li class="nav-item"><a href="/get-codes" class="nav-link" aria-current="page">Коды выдачи</a></li>
+        </ul>
+      </header>
+      {% if modal_window %}
+        <!-- Модальное окно -->
+        <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+          <div class="modal-dialog">
+            <div class="modal-content">
+              <div class="modal-header">
+                <h1 class="modal-title fs-5" id="exampleModalLabel">Вывод денег</h1>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Закрыть"></button>
+              </div>
+              <div class="modal-body">
+                {{ message }}
+              </div>
+              <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Закрыть</button>
+              </div>
+            </div>
+          </div>
+        </div>
+        <script type="text/javascript">
+            $(window).on('load',function(){
+                $('#exampleModal').modal('show');
+            });
+        </script>
+      {% endif %}
+      <div class="row row-cols-3 row-cols-md-3 mb-1 text-center">
+      {% for account in accounts %}
+        <div class="col-lg-" style="margin-bottom: 50px;">
+          <img src="{% static 'icon.png' %}">
+          <h2 class="fw-normal">{{ account.full_name }}</h2>
+          <form method="POST">
+            {% csrf_token %}
+            <input class="btn btn-success rounded-pill px-3" type="submit" name="get-money_{{ account.account_number }}_{{ account.balance }}" value="Вывести {{ account.balance }} руб.">
+          </form>
+        </div>
+      {% endfor %}
+      </div>
+    </div>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js" integrity="sha384-geWF76RCwLtnZ8qwWowPQNguL3RmwHVBC9FhGdlKrxdiJJigb/j/68SIy3Te4Bkz" crossorigin="anonymous"></script>
+  </body>
+</html>

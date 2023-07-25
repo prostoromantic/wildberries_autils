@@ -1,0 +1,79 @@
+{% load static %}
+
+<!doctype html>
+<html lang="ru">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>WBTools - оставить отзыв</title>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-9ndCyUaIbzAi2FUVXJi0CjmCapSmO7SnpJef0486qhLnuZ2cdeRhO02iuK6FUUVM" crossorigin="anonymous">
+  </head>
+  <body>
+    <div class="container marketing">
+      <header class="d-flex justify-content-center py-3">
+        <ul class="nav nav-pills">
+          <li class="nav-item"><a href="/register-accounts" class="nav-link" aria-current="page">Зарегистрировать аккаунт</a></li>
+          <li class="nav-item"><a href="/" class="nav-link" aria-current="page">Список аккаунтов</a></li>
+          <li class="nav-item"><a href="/get-money" class="nav-link" aria-current="page">Вывод денег</a></li>
+          <li class="nav-item"><a href="/send-review" class="nav-link" aria-current="page">Оставить отзыв</a></li>
+          <li class="nav-item"><a href="/ransoms" class="nav-link" aria-current="page">Выкупы</a></li>
+          <li class="nav-item"><a href="/get-codes" class="nav-link active" aria-current="page">Коды выдачи</a></li>
+        </ul>
+      </header>
+    </div>
+    <div class="container text-center">
+      <button id="copy" class="btn btn-success">Скопировать коды выдачи</button>
+      <div class="ransoms">
+        <h2>Коды выдачи</h2>
+        <div class="row">
+          <div class="col">Аккаунт</div>
+          <div class="col">Адрес</div>
+          <div class="col">Название</div>
+          <div class="col">Артикул</div>
+          <div class="col">Код выдачи</div>
+          <div class="col">QR Code</div>
+        </div>
+        {% for account in accounts %}
+          <div class="row">
+            <div class="col">{{ account.0 }}</div>
+            <div class="col">{{ account.1 }}</div>
+            <div class="col">{{ account.2 }}</div>
+            <div class="col">{{ account.3 }}</div>
+            <div class="col">{{ account.4 }}</div>
+            <div class="col">
+              <span id="big-photo"></span>
+              <img width="100" height="100" onclick="open_photo('data:image/png;base64,{{ account.5 | safe }}')" class="photo" src="data:image/png;base64,{{ account.5 | safe }}">
+            </div>
+          </div>
+        {% endfor %}
+      </div>
+    </div>
+    <script type="text/javascript">
+      function open_photo(photo) {
+        document.getElementById("big-photo").innerHTML =
+          ("<img onclick='close_photo()' style='position: absolute;' src='" + photo + "'>")
+      }
+
+      function close_photo() {
+        document.getElementById("big-photo").innerHTML = ""
+      }
+
+      document.querySelector('button').addEventListener('click', e => {
+        var inp = document.createElement('input')
+        inp.value = "{{ text | safe }}"
+        document.body.appendChild(inp)
+        inp.select()
+
+        if (document.execCommand('copy')) {
+          console.log("Done!")
+        } else {
+          console.log("Failed...")
+        }
+
+        document.body.removeChild(inp)
+      })
+    </script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js" integrity="sha384-geWF76RCwLtnZ8qwWowPQNguL3RmwHVBC9FhGdlKrxdiJJigb/j/68SIy3Te4Bkz" crossorigin="anonymous"></script>
+  </body>
+</html>

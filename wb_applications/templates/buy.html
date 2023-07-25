@@ -1,0 +1,101 @@
+{% load static %}
+
+<!doctype html>
+<html lang="ru">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>WBTools - оставить отзыв</title>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-9ndCyUaIbzAi2FUVXJi0CjmCapSmO7SnpJef0486qhLnuZ2cdeRhO02iuK6FUUVM" crossorigin="anonymous">
+  </head>
+  <body>
+    <div class="container marketing">
+      <header class="d-flex justify-content-center py-3">
+        <ul class="nav nav-pills">
+          <li class="nav-item"><a href="/register-accounts" class="nav-link" aria-current="page">Зарегистрировать аккаунт</a></li>
+          <li class="nav-item"><a href="/" class="nav-link" aria-current="page">Список аккаунтов</a></li>
+          <li class="nav-item"><a href="/get-money" class="nav-link" aria-current="page">Вывод денег</a></li>
+          <li class="nav-item"><a href="/send-review" class="nav-link" aria-current="page">Оставить отзыв</a></li>
+          <li class="nav-item"><a href="/ransoms" class="nav-link active" aria-current="page">Выкупы</a></li>
+          <li class="nav-item"><a href="/get-codes" class="nav-link" aria-current="page">Коды выдачи</a></li>
+        </ul>
+      </header>
+    </div>
+    {% if modal_window %}
+        <!-- Модальное окно -->
+        <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+          <div class="modal-dialog">
+            <div class="modal-content">
+              <div class="modal-header">
+                <h1 class="modal-title fs-5" id="exampleModalLabel">Отправка отзыва</h1>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Закрыть"></button>
+              </div>
+              <div class="modal-body text-center">
+                <p style="padding-bottom: 30px;">{{ message }}</p>
+                {{ qr_code | safe }}
+              </div>
+                {% if message == "Оплатите следующий QR для привязки счета СБП" %}
+                  <div class="modal-footer">
+                    <form method="POST">
+                      {% csrf_token %}
+                      <input type="submit" class="btn btn-success" id="success" name="success___{{ profile_name }}___{{ article }}___{{ payment_url }}___{{ address }}" data-bs-dismiss="modal" value="Я оплатил">
+                    </form>
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Отменить оплату</button>
+                  </div>
+                {% else %}
+                  <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Закрыть</button>
+                  </div>
+                {% endif %}
+            </div>
+          </div>
+        </div>
+        <script type="text/javascript">
+            $(window).on('load',function(){
+                $('#exampleModal').modal('show');
+            });
+        </script>
+      {% endif %}
+    <div class="container">
+      <main>
+        <div class="py-5 text-center">
+          <h2>Создание выкупа</h2>
+          <p class="lead">Заполните поля и нажмите кнопку создать выкуп. Не закрывайте страницу, возможно придется привязать СБП по QR коду.</p>
+          <form method="POST" enctype="multipart/form-data">
+            {% csrf_token %}
+            <label for="word" class="lead">Ключевое слово</label>
+            <input type="text" class="form-control" id="word" name="word" placeholder="" value="">
+            <label for="article" class="lead">Артикул</label>
+            <input type="number" class="form-control" id="article" name="article" placeholder="" value="" required="">
+            <label for="address" class="lead">Адрес</label>
+            <select id="address" name="address" class="form-select" aria-label="Default select example">
+              {% for option in options %}
+                <option value="{{ option.0 }}">{{ option.1 }}</option>
+              {% endfor %}
+            </select>
+            <input class="btn btn-success rounded-pill px-3" type="submit" value="Создать выкуп" style="margin-top: 20px;">
+          </form>
+        </div>
+      </main>
+      <div class="ransoms">
+        <h2>Последние 300 выкупов</h2>
+        <div class="row">
+          <div class="col">Аккаунт</div>
+          <div class="col">Артикул</div>
+          <div class="col">Дата</div>
+          <div class="col">Адрес</div>
+        </div>
+        {% for ransom in ransoms %}
+          <div class="row">
+            <div class="col">{{ ransom.0 }}</div>
+            <div class="col">{{ ransom.1 }}</div>
+            <div class="col">{{ ransom.2 }}</div>
+            <div class="col">{{ ransom.3 }}</div>
+          </div>
+        {% endfor %}
+      </div>
+    </div>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js" integrity="sha384-geWF76RCwLtnZ8qwWowPQNguL3RmwHVBC9FhGdlKrxdiJJigb/j/68SIy3Te4Bkz" crossorigin="anonymous"></script>
+  </body>
+</html>

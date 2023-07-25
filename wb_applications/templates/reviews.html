@@ -1,0 +1,44 @@
+{% load static %}
+
+<!doctype html>
+<html lang="ru">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>WBTools</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-9ndCyUaIbzAi2FUVXJi0CjmCapSmO7SnpJef0486qhLnuZ2cdeRhO02iuK6FUUVM" crossorigin="anonymous">
+  </head>
+  <body>
+    <div class="container marketing">
+      <header class="d-flex justify-content-center py-3">
+        <ul class="nav nav-pills">
+          <li class="nav-item"><a href="/register-accounts" class="nav-link" aria-current="page">Зарегистрировать аккаунт</a></li>
+          <li class="nav-item"><a href="/" class="nav-link" aria-current="page">Список аккаунтов</a></li>
+          <li class="nav-item"><a href="/get-money" class="nav-link" aria-current="page">Вывод денег</a></li>
+          <li class="nav-item"><a href="/send-review" class="nav-link active" aria-current="page">Оставить отзыв</a></li>
+          <li class="nav-item"><a href="/ransoms" class="nav-link" aria-current="page">Выкупы</a></li>
+          <li class="nav-item"><a href="/get-codes" class="nav-link" aria-current="page">Коды выдачи</a></li>
+        </ul>
+      </header>
+    </div>
+     <div class="row row-cols-1 row-cols-md-5 mb-5 text-center bg-body-tertiary">
+    {% for key, value in reviews.items %}
+      <div class="col">
+        <div class="card mb-4 rounded-3 shadow-sm">
+          <div class="card-header py-3">
+            <a href="https://www.wildberries.ru/catalog/{{ key }}/detail.aspx" target="_blank" style="text-decoration: none;"><h4 class="my-0 fw-normal">{{ key }}</h4></a>
+          </div>
+          <div class="card-body">
+            <a href="https://www.wildberries.ru/catalog/{{ key }}/detail.aspx" target="_blank" style="text-decoration: none;">
+              <p>{{ value.name }}</p>
+            </a>
+            <h1 class="card-title pricing-card-title">{{ value.price }}₽<small class="text-body-secondary fw-light"> руб.</small></h1>
+            <a href="/review/{{ key }}"><button type="button" class="w-100 btn btn-lg btn-outline-primary">Оставить отзыв ({{ value.count }})</button></a>
+          </div>
+        </div>
+      </div>
+    {% endfor %}
+    </div>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js" integrity="sha384-geWF76RCwLtnZ8qwWowPQNguL3RmwHVBC9FhGdlKrxdiJJigb/j/68SIy3Te4Bkz" crossorigin="anonymous"></script>
+  </body>
+</html>
